@@ -7,37 +7,38 @@ with open("README.md") as fp:
 
 setuptools.setup(
     name="cdk_stripe_events",
-    version="0.0.1",
-
-    description="An empty CDK Python app",
+    version="1.0.0",
+    description="A pipline from Stripe webhooks to an SQS queue for processing",
     long_description=long_description,
     long_description_content_type="text/markdown",
-
-    author="author",
-
+    author="IFTTT",
     package_dir={"": "cdk_stripe_events"},
     packages=setuptools.find_packages(where="cdk_stripe_events"),
-
     install_requires=[
         "aws-cdk.core==1.117.0",
+        "aws_cdk.aws_apigatewayv2==1.117.0",
+        "aws_cdk.aws_apigatewayv2_integrations==1.117.0",
+        "aws_cdk.aws_apigatewayv2_authorizers==1.117.0",
+        "aws_cdk.aws_iam==1.117.0",
+        "aws_cdk.aws_logs==1.117.0",
+        "aws_cdk.aws_events==1.117.0",
+        "aws_cdk.aws_events_targets==1.117.0",
+        "aws_cdk.aws_sqs==1.117.0",
+        "aws_cdk.aws_secretsmanager==1.117.0",
+        "aws_cdk.aws_lambda==1.117.0",
+        "aws_cdk.aws_lambda_event_sources==1.117.0",
+        "aws_cdk.aws_lambda_python==1.117.0",
+        "stripe==2.60.0",
+        "boto3==1.18.18",
+        "boto3-stubs[essential,secretsmanager]",
+        "black",
     ],
-
-    python_requires=">=3.6",
-
+    python_requires=">=3.8",
     classifiers=[
         "Development Status :: 4 - Beta",
-
         "Intended Audience :: Developers",
-
-        "Programming Language :: JavaScript",
         "Programming Language :: Python :: 3 :: Only",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
-
-        "Topic :: Software Development :: Code Generators",
         "Topic :: Utilities",
-
-        "Typing :: Typed",
     ],
 )

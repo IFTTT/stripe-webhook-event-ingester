@@ -1,58 +1,26 @@
 
-# Welcome to your CDK Python project!
+# Stripe Webhook Event Ingester
 
-This is a blank project for Python development with CDK.
+This is an AWS CDK-based project for ingesting Stripe webhook events into an SQS queue.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+Stripe uses a message digest code to allow clients to verify the integrity of webhook events. Stripe signs
+event messages that allow the receiver to verify the message was signed using a shared secret.
 
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
+See: https://stripe.com/docs/webhooks/signatures
 
-To manually create a virtualenv on MacOS and Linux:
+## The pipeline
 
-```
-$ python3 -m venv .venv
-```
+- An API endpoint that can be set as the Stripe webhook endpoint
+- A Lambda function that receives incoming webhook events and verifies the signature
+- An SQS queue that the Lambda function uses to deposit verified messages for further processing
 
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
+## Setup
 
-```
-$ source .venv/bin/activate
-```
-
-If you are a Windows platform, you would activate the virtualenv like this:
-
-```
-% .venv\Scripts\activate.bat
-```
-
-Once the virtualenv is activated, you can install the required dependencies.
-
-```
-$ pip install -r requirements.txt
-```
-
-At this point you can now synthesize the CloudFormation template for this code.
-
-```
-$ cdk synth
-```
-
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
-
-## Useful commands
-
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
-
-Enjoy!
+- Create the virtual environment: `python3 -m venv .venv`
+- Enable the virtual environment: `source .venv/bin/activate`
+- Install dependencies: `pip install -r requirements.txt`
+- Deploy the stack: `cdk deploy`
+- Create a Stripe Webhook endpoint: https://dashboard.stripe.com/webhooks
+    - Set the URL to the URL of the API endpoint
+    - Note that you'll find the Stripe Signing Secret used in the next step on this page
+- Update the Stripe Signing Secret in the Secrets Manager: https://console.aws.amazon.com/secretsmanager/home
