@@ -3,7 +3,6 @@ from aws_cdk import aws_apigateway
 from aws_cdk import aws_apigatewayv2
 from aws_cdk import aws_apigatewayv2_integrations
 from aws_cdk import aws_logs
-from aws_cdk import aws_sqs
 from aws_cdk import aws_secretsmanager
 from aws_cdk import aws_lambda
 from aws_cdk import aws_lambda_python
@@ -20,9 +19,6 @@ class CdkStripeEventsStack(cdk.Stack):
             "StripeSigningSecret",
             description="Signing secret for authenticating Stripe webhook calls",
         )
-
-        # Queue where authenticated events are placed
-        stripe_event_queue = aws_sqs.Queue(self, "StripeWebhookEvents")
 
         # The API used as the Stripe webhook
         webhook_api = aws_apigatewayv2.HttpApi(
@@ -61,7 +57,6 @@ class CdkStripeEventsStack(cdk.Stack):
             "StripeWebhookIngester",
             description="Handles incoming Stripe webhook events by validating the signature and pushing to an SQS queue",
             environment={
-                "STRIPE_EVENT_QUEUE_URL": stripe_event_queue.queue_url,
                 "STRIPE_SIGNING_SECRET_ARN": stripe_signing_secret.secret_arn,
             },
             entry="functions/stripe_webhook_ingester",
@@ -78,11 +73,12 @@ class CdkStripeEventsStack(cdk.Stack):
                 resources=[stripe_signing_secret.secret_arn],
             )
         )
+
         stripe_webhook_ingester_function.add_to_role_policy(
             aws_iam.PolicyStatement(
-                actions=["sqs:SendMessage"],
+                actions=["events:PutEvents"],
                 effect=aws_iam.Effect.ALLOW,
-                resources=[stripe_event_queue.queue_arn],
+                resources=["*"],
             )
         )
 

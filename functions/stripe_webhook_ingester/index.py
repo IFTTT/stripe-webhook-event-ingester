@@ -1,4 +1,6 @@
 import json
+import datetime
+
 import stripe
 import boto3
 import botocore
@@ -11,7 +13,8 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 secrets_client = boto3.client("secretsmanager")
-sqs_client = boto3.client("sqs")
+eventbridge_client = boto3.client("events")
+
 
 
 def handler(event, context):
@@ -26,17 +29,8 @@ def handler(event, context):
 
         return {"statusCode": 500}
 
-    # Required environment variable
-    stripe_event_queue_url = os.getenv("STRIPE_EVENT_QUEUE_URL")
-    if not stripe_event_queue_url:
-        logger.error(
-            f"Unable to get Stripe event queue url from environment: STRIPE_EVENT_QUEUE_URL"
-        )
-
-        return {"statusCode": 500}
-
-    # Required secret
     try:
+    # Required secret
         stripe_signing_secret = secrets_client.get_secret_value(
             SecretId=stripe_signing_secret_arn
         )["SecretString"]
@@ -70,10 +64,15 @@ def handler(event, context):
         logger.error(f"Invalid signature!\n{e}")
         return {"statusCode": 400}
 
-    # Push the message to the SQS queue
-    sqs_client.send_message(
-        QueueUrl=stripe_event_queue_url,
-        MessageBody=json.dumps(authenticated_stripe_webhook_event),
+    eventbridge_client.put_events(
+        Entries=[
+            {
+                "Time": datetime.datetime.now(),
+                "Source": "stripe",
+                "DetailType": authenticated_stripe_webhook_event["type"],
+                "Detail": json.dumps(authenticated_stripe_webhook_event),
+            }
+        ]
     )
 
     return {"statusCode": 200}

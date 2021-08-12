@@ -10,7 +10,7 @@ app = cdk.App()
 stripe_events_stack = CdkStripeEventsStack(
     app,
     "CdkStripeEventsStack",
-    description="Creates an API to access webhook events from Stripe. Events are validated with a signature check and pushed to an SQS queue.",
+    description="Creates an API to access webhook events from Stripe. Events are validated with a signature check and pushed to EventBridge.",
 )
 
 cdk.Tags.of(stripe_events_stack).add("Project", "StripeWebhookIngestion")
