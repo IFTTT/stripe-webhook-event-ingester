@@ -21,8 +21,6 @@ setuptools.setup(
         "aws_cdk.aws_apigatewayv2_authorizers==1.117.0",
         "aws_cdk.aws_iam==1.117.0",
         "aws_cdk.aws_logs==1.117.0",
-        "aws_cdk.aws_events==1.117.0",
-        "aws_cdk.aws_events_targets==1.117.0",
         "aws_cdk.aws_sqs==1.117.0",
         "aws_cdk.aws_secretsmanager==1.117.0",
         "aws_cdk.aws_lambda==1.117.0",
