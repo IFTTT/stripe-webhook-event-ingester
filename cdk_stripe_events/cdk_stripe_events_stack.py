@@ -55,7 +55,7 @@ class CdkStripeEventsStack(cdk.Stack):
         stripe_webhook_ingester_function = aws_lambda_python.PythonFunction(
             self,
             "StripeWebhookIngester",
-            description="Handles incoming Stripe webhook events by validating the signature and pushing to an SQS queue",
+            description="Handles incoming Stripe webhook events by validating the signature and then pushing the event to the event bus",
             environment={
                 "STRIPE_SIGNING_SECRET_ARN": stripe_signing_secret.secret_arn,
             },
