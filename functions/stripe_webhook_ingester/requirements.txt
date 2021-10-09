@@ -1,4 +1,1 @@
-# These are the runtime dependencies that will be packaged with the Lambda
-# Note: No need to import Boto as it is already provisioned in the Lambda runtime
-stripe == 2.60.0
-aws_xray_sdk == 2.8.0
+# Note: Add dependencies to the requirements.txt in the common_layer folder
