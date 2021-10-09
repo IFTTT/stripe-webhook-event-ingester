@@ -3,16 +3,16 @@ import os
 
 from aws_cdk import core as cdk
 
-from cdk_stripe_events.cdk_stripe_events_stack import CdkStripeEventsStack
+from stacks.webhook import WebhookStack
 
 app = cdk.App()
 
-stripe_events_stack = CdkStripeEventsStack(
+webhook_stack = WebhookStack(
     app,
-    "CdkStripeEventsStack",
-    description="Creates an API to access webhook events from Stripe. Events are validated with a signature check and pushed to EventBridge.",
+    "CdkStripeWebhook",
+    description="Creates a webhook API to receive Stripe events. Events are validated and sent to Event Bridge",
 )
 
-cdk.Tags.of(stripe_events_stack).add("Project", "StripeWebhookIngestion")
+cdk.Tags.of(webhook_stack).add("Project", "StripeWebhook")
 
 app.synth()
