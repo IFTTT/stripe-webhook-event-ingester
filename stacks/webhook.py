@@ -1,7 +1,4 @@
 from aws_cdk import core as cdk
-from aws_cdk import aws_apigateway
-from aws_cdk import aws_apigatewayv2
-from aws_cdk import aws_apigatewayv2_integrations
 from aws_cdk import aws_logs
 from aws_cdk import aws_secretsmanager
 from aws_cdk import aws_lambda
